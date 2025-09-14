@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f0f8ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 20px;
+  font-size: 36px;
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border: 3px solid #34495e;
+  font-size: 36px;
+  cursor: pointer;
+  color: #34495e;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.cell:hover {
+  background-color: #ecf0f1;
+  transform: scale(1.1);
+}
+
+.cell.x {
+  color: #e74c3c;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(231, 76, 60, 0.8);
+}
+
+.cell.o {
+  color: #3498db;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(52, 152, 219, 0.8);
+}
+
+.restart-btn {
+  padding: 12px 30px;
+  font-size: 18px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}
+
+.restart-btn:hover {
+  background-color: #27ae60;
+}
+
+.restart-btn:active {
+  transform: scale(0.98);
+}
+
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tic Tac Toe</h1>
+    <div class="board" id="board">
+      <div class="cell" data-index="0"></div>
+      <div class="cell" data-index="1"></div>
+      <div class="cell" data-index="2"></div>
+      <div class="cell" data-index="3"></div>
+      <div class="cell" data-index="4"></div>
+      <div class="cell" data-index="5"></div>
+      <div class="cell" data-index="6"></div>
+      <div class="cell" data-index="7"></div>
+      <div class="cell" data-index="8"></div>
+    </div>
+    <button id="restart" class="restart-btn">Restart Game</button>
+  </div>
+
+  <script>const board = document.getElementById('board');
+const cells = document.querySelectorAll('.cell');
+const restartButton = document.getElementById('restart');
+let currentPlayer = 'X';  // 'X' starts the game
+let gameBoard = ['', '', '', '', '', '', '', '', ''];  // Represents the board
+let gameActive = true;
+
+const winConditions = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
+
+function handleClick(e) {
+  const cellIndex = e.target.getAttribute('data-index');
+  
+  if (gameBoard[cellIndex] !== '' || !gameActive) {
+    return; // Cell is already taken or game is over
+  }
+  
+  gameBoard[cellIndex] = currentPlayer;
+  e.target.textContent = currentPlayer;
+  e.target.classList.add(currentPlayer.toLowerCase()); // Add class for styling X or O
+
+  if (checkWinner()) {
+    alert(`${currentPlayer} wins!`);
+    gameActive = false;
+  } else if (gameBoard.every(cell => cell !== '')) {
+    alert('It\'s a tie!');
+    gameActive = false;
+  } else {
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; // Switch player
+  }
+}
+
+function checkWinner() {
+  return winConditions.some(condition => {
+    const [a, b, c] = condition;
+    return gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c];
+  });
+}
+
+function restartGame() {
+  gameBoard = ['', '', '', '', '', '', '', '', ''];
+  gameActive = true;
+  currentPlayer = 'X';
+  cells.forEach(cell => {
+    cell.textContent = '';
+    cell.classList.remove('x', 'o');
+  });
+}
+
+cells.forEach(cell => cell.addEventListener('click', handleClick));
+restartButton.addEventListener('click', restartGame);
+
+</script>
+</body>
+</html>
